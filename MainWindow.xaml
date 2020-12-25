@@ -1,0 +1,71 @@
+﻿<Window x:Class="ChatApplication.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChatApplication"
+        xmlns:vm="clr-namespace:ChatApplication.ViewModel"
+        xmlns:prism="http://prismlibrary.com/"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        WindowState="Maximized" 
+        mc:Ignorable="d"
+        Title="" Height="450"  Width="800"  >
+    <Window.Resources>
+        
+        <Style x:Key = "TriggerStyle" TargetType = "Button">
+            <Setter Property = "Foreground" Value = "Black" />
+            <Style.Triggers>
+                <Trigger Property = "IsMouseOver" Value = "True">
+                    <Setter Property = "Foreground" Value = "Blue" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <DataTemplate x:Key="Users_List">
+                <StackPanel Orientation="Vertical" Height="50" Margin="0,2,0,2">
+                    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Orientation="Horizontal">
+                        <Border Height="40" Width="40" Margin="3,3,3,3" Background="DarkGray" BorderBrush="LightSteelBlue" BorderThickness="3">
+                            <TextBlock TextAlignment="Center" VerticalAlignment="Center" Text="{Binding UserIconName}"/>
+                        </Border>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Height="20" Text="{Binding UsersName}" Margin="10,0,5,0"/>
+                        <TextBlock Height="12" Text="{Binding UserPreviousMessage}" FontSize="9" Margin="10,0,0,0"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding UserMessageTime}" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="9"/>
+                </StackPanel>
+                <Border BorderThickness="1" BorderBrush="DarkGray" Width="auto"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="Chat_Box">
+            <StackPanel Orientation="Vertical" MaxWidth="300" Height="Auto" Background="LightSteelBlue"  VerticalAlignment="Top" Margin="0,14,2,14"  HorizontalAlignment="{Binding AlignmentType, Mode=TwoWay}">
+                    <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" LineHeight="20" Height="auto" Padding="4,4,4,4" FontSize="16"  Text="{Binding ChatContent, Mode=TwoWay}"/>
+                <TextBlock HorizontalAlignment="Right" FontStyle="Italic" FontSize="9" Padding="2,2,2,2" Text="{Binding ChatTime, Mode=TwoWay}" />
+                </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+
+
+    <Grid x:Name="LayoutRoot" Background="Gray" >
+        <DockPanel LastChildFill="True" HorizontalAlignment="Stretch"  Name="dockPanel" VerticalAlignment="Stretch"  >
+                <Border BorderBrush="Silver" BorderThickness="1" DockPanel.Dock="Top" >
+                    <StackPanel Orientation="Horizontal"  Height="40" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock FontFamily="Verdana" FontSize="25" FontStyle="Italic" FontWeight="Bold" Foreground="AliceBlue" Text="{Binding CurrentUserName}" />
+                </StackPanel>
+                </Border>
+                <Border BorderBrush="Silver" BorderThickness="1"  DockPanel.Dock="Bottom" Height="60" Margin="219,0,0,0" >
+                    <Grid  HorizontalAlignment="Stretch" VerticalAlignment="Center"  Height="auto" >
+                    <TextBox Name="MessageInputBox" TextWrapping="Wrap"  Text="{Binding MessageInput , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  VerticalScrollBarVisibility="Visible"  HorizontalAlignment="Left" Width="469" Height="50" Margin="-14,0,0,0"/>
+                    <Button VerticalAlignment="Center" Style="{StaticResource TriggerStyle}" HorizontalAlignment="Right" Height="30" Width="60" Margin="0,0,30,0" IsDefault="True" Command="{Binding SendBtnCommand}">Send</Button>
+                    </Grid>
+                </Border>
+
+                <Border BorderBrush="Silver" BorderThickness="1"  DockPanel.Dock="Left" >
+                <ListBox Name="ReceiverListBox" Width="200" ItemsSource="{Binding ReceiversChat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" ItemTemplate="{StaticResource Users_List}"/>
+                </Border>
+                <Border BorderBrush="Silver" BorderThickness="1" />
+
+            <ListBox  Name="ChatListBox"  ItemsSource="{Binding ChatList, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}" ItemTemplate="{StaticResource Chat_Box}" VerticalContentAlignment="Top" HorizontalContentAlignment="Stretch"/>
+        </DockPanel>
+        </Grid>
+    </Window>
